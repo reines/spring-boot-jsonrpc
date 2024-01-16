@@ -147,7 +147,7 @@ public class JsonRpcServer {
 		// Bind to the actual port for this new channel
 		channel = bootstrap.bind( port ).sync().channel();
 
-		LOGGER.info( "RPC Server listening on port {}", port );
+		LOGGER.info( "RPC Server listening on port {}", getPort() );
 	}
 
 	public int getPort() {
