@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furnaghan.spring.jsonrpc.api.RpcMethod;
 import com.furnaghan.spring.jsonrpc.server.error.InvalidParameterException;
 import com.furnaghan.spring.jsonrpc.server.error.ParseException;
+import com.google.common.primitives.Primitives;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
@@ -62,9 +63,9 @@ public class ApiMethod {
 		}
 
 		for ( int i = 0; i < parameters.length; i++ ) {
-			final Class<?> paramType = parameters[i].getType();
-			final Object param = methodParams[i];
-			if ( !paramType.isInstance( param ) ) {
+			final Class<?> expectedType = Primitives.wrap( parameters[i].getType() );
+			final Class<?> actualType = Primitives.wrap( methodParams[i].getClass() );
+			if ( !expectedType.isAssignableFrom( actualType ) ) {
 				throw new InvalidParameterException( parameters );
 			}
 		}
