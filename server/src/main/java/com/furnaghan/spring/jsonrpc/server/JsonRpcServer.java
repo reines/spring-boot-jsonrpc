@@ -4,9 +4,11 @@ import static java.util.Objects.requireNonNull;
 
 import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
 
+import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,6 +60,7 @@ public class JsonRpcServer {
 	private final ApplicationContext context;
 	private final ExecutorService executor = Executors.newCachedThreadPool();
 	private final Map<String, ApiHandler> handlers = new ConcurrentHashMap<>();
+	private Channel channel;
 
 	// @formatter:off
 	public JsonRpcServer(
@@ -142,9 +145,17 @@ public class JsonRpcServer {
 		} );
 
 		// Bind to the actual port for this new channel
-		bootstrap.bind( port ).sync();
+		channel = bootstrap.bind( port ).sync().channel();
 
 		LOGGER.info( "RPC Server listening on port {}", port );
+	}
+
+	public int getPort() {
+		return Optional.ofNullable( channel )
+				.map( Channel::localAddress )
+				.map( InetSocketAddress.class::cast )
+				.map( InetSocketAddress::getPort )
+				.orElse( port );
 	}
 
 	@PreDestroy
