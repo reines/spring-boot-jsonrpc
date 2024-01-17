@@ -6,6 +6,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation:${springBootVersion}")
     implementation("org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}")
 
+    val guavaVersion = "33.0.0-jre"
+    implementation("com.google.guava:guava:${guavaVersion}")
+
     val nettyVersion = "4.1.104.Final"
     implementation("io.netty:netty-all:${nettyVersion}")
 
