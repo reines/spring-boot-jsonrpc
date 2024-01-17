@@ -1,5 +1,7 @@
 package com.furnaghan.spring.jsonrpc.server.rpc;
 
+import static org.springframework.core.annotation.AnnotatedElementUtils.hasAnnotation;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -18,7 +20,7 @@ public class ApiDefinition {
 			final ObjectMapper objectMapper ) {
 		this.namespace = namespace;
 		this.methods = Stream.of( api.getMethods() )
-				.filter( method -> method.isAnnotationPresent( RpcMethod.class ) )
+				.filter( method -> hasAnnotation( method, RpcMethod.class ) )
 				.map( method -> new ApiMethod( method, objectMapper ) )
 				.collect( Collectors.toMap( ApiMethod::getName, Function.identity() ) );
 	}

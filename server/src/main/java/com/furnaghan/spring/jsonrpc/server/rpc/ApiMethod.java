@@ -6,6 +6,8 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -43,7 +45,7 @@ public class ApiMethod {
 		this.method = method;
 		this.objectMapper = objectMapper;
 		this.parameters = method.getParameters();
-		this.name = Optional.ofNullable( method.getAnnotation( RpcMethod.class ) )
+		this.name = Optional.ofNullable( findAnnotation( method, RpcMethod.class ) )
 				.map( RpcMethod::name )
 				.filter( n -> !n.isEmpty() )
 				.orElseGet( method::getName );

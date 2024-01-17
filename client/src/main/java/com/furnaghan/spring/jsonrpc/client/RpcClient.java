@@ -1,5 +1,7 @@
 package com.furnaghan.spring.jsonrpc.client;
 
+import static org.springframework.core.annotation.AnnotationUtils.findAnnotation;
+
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
@@ -7,8 +9,7 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.core.annotation.AnnotationUtils;
-
+import com.furnaghan.spring.jsonrpc.api.RpcController;
 import com.furnaghan.spring.jsonrpc.api.RpcMethod;
 import com.furnaghan.spring.jsonrpc.client.connection.Connection;
 
@@ -27,12 +28,21 @@ public abstract class RpcClient {
 		this.timeout = new Timeout( timeout.toMillis(), TimeUnit.MILLISECONDS );
 	}
 
+	public <T> T create( final Class<T> clazz ) {
+		final RpcController annotation = findAnnotation( clazz, RpcController.class );
+		if ( annotation == null ) {
+			throw new IllegalArgumentException(
+					"@RpcController not present so cannot determine namespace" );
+		}
+
+		return create( annotation.namespace(), clazz );
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T create( final String namespace, final Class<T> clazz ) {
 		return (T) Proxy.newProxyInstance( clazz.getClassLoader(), new Class<?>[] { clazz },
 				( proxy, method, args ) -> {
-					final RpcMethod annotation = AnnotationUtils.findAnnotation( method,
-							RpcMethod.class );
+					final RpcMethod annotation = findAnnotation( method, RpcMethod.class );
 					if ( annotation == null ) {
 						return method.invoke( this, args );
 					}
