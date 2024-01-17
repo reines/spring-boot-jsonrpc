@@ -13,6 +13,6 @@ dependencies {
     annotationProcessor("com.github.therapi:therapi-runtime-javadoc-scribe:${rapiVersion}")
     implementation("com.github.therapi:therapi-runtime-javadoc:${rapiVersion}")
 
-    val reflectionsVersion = "0.9.10"
+    val reflectionsVersion = "0.10.2"
     implementation("org.reflections:reflections:${reflectionsVersion}")
 }

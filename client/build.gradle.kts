@@ -5,5 +5,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
 
     val stormpotVersion = "2.4.2"
-    implementation("com.github.chrisvest:stormpot:${stormpotVersion}")
+    api("com.github.chrisvest:stormpot:${stormpotVersion}")
 }
